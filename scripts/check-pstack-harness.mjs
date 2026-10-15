@@ -24,7 +24,7 @@ const TERMS = [
   { key: "comment-sicko", re: /comment-sicko/ },
   { key: "`readonly: true`", re: /readonly: (true|false)|readonly\/Ask/ },
   { key: "`environment: \"cloud\"`", re: /environment: "(cloud|local)"/ },
-  { key: "`cloud_base_branch", re: /cloud_base_branch/ },
+  { key: "cloud_base_branch", re: /cloud_base_branch/ },
   { key: "`run_in_background: true`", re: /run_in_background/ },
   { key: "`resume`", re: /`resume`/ },
   { key: "`file_attachments`", re: /file_attachments/ },
