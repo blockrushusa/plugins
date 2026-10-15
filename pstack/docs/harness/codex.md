@@ -45,7 +45,7 @@ pstack skills use Cursor names. In Codex, read this file once per session, then 
 | `~/.cursor/skills/` | `~/.agents/skills/` |
 | `~/.cursor/plugins/`, `.cursor-plugin/plugin.json` | `~/.codex/plugins/cache/`, root `plugin.json` |
 | `.cursor/rules/*.mdc`, always-applied rules | `AGENTS.md`. Codex never reads `.mdc` files. |
-| Transcripts in `~/.cursor/projects/<slug>/agent-transcripts/` | `~/.codex/sessions/<yyyy>/<mm>/<dd>/rollout-<time>-<id>.jsonl`. The newest file is the current session. |
+| Transcripts in `~/.cursor/projects/<slug>/agent-transcripts/` | `~/.codex/sessions/<yyyy>/<mm>/<dd>/rollout-<time>-<id>.jsonl`. All workspaces share this tree. Line 1 of each file is `session_meta`. Read only files whose `payload.cwd` is this workspace or a folder in it. The newest of those without `payload.source.subagent` is the current session. |
 
 ## Cursor-only features
 
