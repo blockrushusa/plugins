@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-// Keeps pstack's Cursor-named skills usable in Claude Code and Codex. Codex
-// ignores disable-model-invocation, so each hidden skill needs a sidecar.
-// Usage: node scripts/check-pstack-harness.mjs [--fix]
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -15,6 +12,7 @@ const ADAPTERS = {
 };
 const POINTER =
   "Outside Cursor, first read the adapter for your harness, [Claude Code](../../docs/harness/claude-code.md) or [Codex](../../docs/harness/codex.md).";
+// Codex ignores disable-model-invocation, so each hidden skill needs a sidecar.
 const SIDECAR = "policy:\n  allow_implicit_invocation: false\n";
 
 const TERMS = [
@@ -59,10 +57,10 @@ const skills = readdirSync(SKILLS).filter((name) => existsSync(join(SKILLS, name
 function classify(skill) {
   const dir = join(SKILLS, skill);
   const others = skills.filter((name) => name !== skill).join("|");
-  // A relative link carries its own path, so only a bare skill name needs the adapter.
-  const route = new RegExp(`the \\*\\*(${others})\\*\\* skill|\`/(${others})\``, "g");
+  const route = new RegExp(`the \\*\\*(?<bold>${others})\\*\\* skill|\`/(?<command>${others})\``, "g");
+  const linksToSkill = (line, name) => line.includes(`(../${name}/`);
   const namesBareSkill = (line) =>
-    [...line.matchAll(route)].some((m) => !line.includes(`(../${m[1] ?? m[2]}/`));
+    [...line.matchAll(route)].some(({ groups }) => !linksToSkill(line, groups.bold ?? groups.command));
   const usesCursorNames = new Set();
   for (const file of filesUnder(dir)) {
     const text = readFileSync(file, "utf8");
