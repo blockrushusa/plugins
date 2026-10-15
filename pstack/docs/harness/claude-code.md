@@ -34,7 +34,7 @@ pstack skills use Cursor names. In Claude Code, read this file once per session,
 | `claude-<family>-<version>-<effort>[-fast]`, such as `claude-opus-5-5-xhigh` | `model: "opus"` and `effort: "xhigh"`. `model` takes only `opus`, `sonnet`, `haiku`, `fable`. Drop `-fast`. |
 | A `grok-*`, `gpt-*`, or other non-Claude slug | Omit `model` so the agent runs on the session model, and say so. |
 | `auto` or `inherit-parent` | Omit `model`. |
-| The `pstack-models.mdc` rule | Claude Code does not load it. Use the skill's default slug and map it with these rows. |
+| The `pstack-models.mdc` rule | Claude Code does not load it. Use the skill's default slug and map it with these rows. `setup-pstack` has nothing to write, so say so and stop. Never put its role lines in `CLAUDE.md` or `AGENTS.md`. |
 
 ## Paths
 

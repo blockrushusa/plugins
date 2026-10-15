@@ -35,7 +35,7 @@ pstack skills use Cursor names. In Codex, read this file once per session, then 
 | Any slug, such as `grok-4.7-xhigh-fast`, `claude-opus-5-5-xhigh`, or a `gpt-*` slug | Omit `model` so the worker runs on the session model, and say so. Pass `model` only with a slug that the `spawn_agent` description lists. |
 | An effort in a slug (`low`, `medium`, `high`, `xhigh`, `max`) | `reasoning_effort` with the same word, if the description lists it for that model. |
 | `auto` or `inherit-parent` | Omit `model`. |
-| The `pstack-models.mdc` rule | Codex does not load it. Use the skill's default and map it with these rows. |
+| The `pstack-models.mdc` rule | Codex does not load it. Use the skill's default and map it with these rows. `setup-pstack` has nothing to write, so say so and stop. Never put its role lines in `AGENTS.md`. |
 
 ## Paths
 
