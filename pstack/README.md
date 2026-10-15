@@ -25,7 +25,7 @@ in claude code:
 /plugin install pstack@cursor-plugins
 ```
 
-claude code prefixes plugin commands and agents, so `/poteto-mode` is `/pstack:poteto-mode`.
+claude code prefixes plugin commands and agents, so `/poteto-mode` is `/pstack:poteto-mode`. the [claude code adapter](./docs/harness/claude-code.md) maps every other cursor name.
 
 ## get started
 
