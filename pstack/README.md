@@ -27,6 +27,15 @@ in claude code:
 
 claude code prefixes plugin commands and agents, so `/poteto-mode` is `/pstack:poteto-mode`. the [claude code adapter](./docs/harness/claude-code.md) maps every other cursor name.
 
+in codex:
+
+```bash
+codex plugin marketplace add cursor/plugins
+codex plugin add pstack@cursor-plugins
+```
+
+codex invokes plugin skills as `$pstack:<name>`, and the [codex adapter](./docs/harness/codex.md) maps every other cursor name.
+
 ## get started
 
 two steps:

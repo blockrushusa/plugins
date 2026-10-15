@@ -117,11 +117,40 @@ for (const entry of claudeMarketplace.plugins ?? []) {
   }
 }
 
-// 4. Check that every manifest of a plugin carries the same version, so a
+// 4. Validate the Codex marketplace entries. Codex reads a root plugin.json
+// before .codex-plugin/plugin.json.
+const codexMarketplacePath = resolve(root, ".agents/plugins/marketplace.json");
+const codexMarketplace = existsSync(codexMarketplacePath)
+  ? loadJSON(codexMarketplacePath)
+  : { plugins: [] };
+
+for (const entry of codexMarketplace.plugins ?? []) {
+  const pluginDir = resolve(root, entry.source.path);
+  const pluginJsonPath = ["plugin.json", ".codex-plugin/plugin.json"]
+    .map((path) => resolve(pluginDir, path))
+    .find((path) => existsSync(path));
+
+  if (!pluginJsonPath) {
+    fail(
+      `Plugin "${entry.name}": missing plugin.json or .codex-plugin/plugin.json in "${entry.source.path}"`
+    );
+    continue;
+  }
+
+  const pluginJson = loadJSON(pluginJsonPath);
+  if (pluginJson.name && pluginJson.name !== entry.name) {
+    fail(
+      `Plugin "${entry.name}": Codex marketplace name does not match ${pluginJsonPath.slice(root.length + 1)} name "${pluginJson.name}"`
+    );
+  }
+}
+
+// 5. Check that every manifest of a plugin carries the same version, so a
 // bump never reaches one harness and misses another.
 const manifestPaths = [
   ".cursor-plugin/plugin.json",
   ".claude-plugin/plugin.json",
+  ".codex-plugin/plugin.json",
   "plugin.json",
 ];
 const sources = new Map();
@@ -130,6 +159,9 @@ for (const entry of [
   ...(claudeMarketplace.plugins ?? []),
 ]) {
   sources.set(resolve(root, entry.source), entry.name);
+}
+for (const entry of codexMarketplace.plugins ?? []) {
+  sources.set(resolve(root, entry.source.path), entry.name);
 }
 
 for (const [pluginDir, name] of sources) {
@@ -147,7 +179,7 @@ for (const [pluginDir, name] of sources) {
   }
 }
 
-// 5. Report results
+// 6. Report results
 if (errors > 0) {
   console.error(`\nValidation failed with ${errors} error(s).`);
   process.exit(1);
