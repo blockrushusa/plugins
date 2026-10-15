@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # Technical writing
 
+Outside Cursor, first read the adapter for your harness, [Claude Code](../../docs/harness/claude-code.md) or [Codex](../../docs/harness/codex.md).
+
 Write so a tired engineer understands on the first read. Apply all four layers.
 
 Three rules sit above the layers:

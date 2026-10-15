@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # Show me your work
 
+Outside Cursor, first read the adapter for your harness, [Claude Code](../../docs/harness/claude-code.md) or [Codex](../../docs/harness/codex.md).
+
 Keep one canonical log.
 
 ## The format
