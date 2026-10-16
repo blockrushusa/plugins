@@ -99,8 +99,7 @@ for (const problem of problems) console.log(`FAIL ${problem}`);
 if (problems.length > 0) process.exit(1);
 
 function render({ dir, label, manifests, sidecars }) {
-  const docs = walk(join(PSTACK, "docs")).filter((path) => path.endsWith(".md"));
-  const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents")), ...docs, join(PSTACK, "README.md")];
+  const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents")), ...walk(join(PSTACK, "docs")), join(PSTACK, "README.md")];
   const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
   const line =
     `In ${label}, read [the ${label} adapter](../../docs/harness/${dir}.md) once per session before you follow this skill. ` +
