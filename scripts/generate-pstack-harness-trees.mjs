@@ -10,13 +10,15 @@ const SKILLS = join(PSTACK, "skills");
 // Outside pstack/ so Cursor, which copies the whole plugin folder, does not install these trees too.
 const OUT = join(ROOT, "harness", "pstack");
 const COMMAND = "node scripts/generate-pstack-harness-trees.mjs";
+const GITHUB = "https://github.com/cursor/plugins";
+const LINK = /\]\(([^)\s]+)\)/g;
 // Codex ignores disable-model-invocation, so each hidden skill needs a sidecar.
 const SIDECAR = "policy:\n  allow_implicit_invocation: false\n";
 const README = `# pstack harness trees
 
-This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/docs\`, \`pstack/automations\`, \`pstack/README.md\`, and \`pstack/plugin.json\`. Do not edit it by hand.
+This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/docs\`, \`pstack/README.md\`, and \`pstack/plugin.json\`. Do not edit it by hand.
 
-Cursor uses \`pstack/\` directly. Claude Code installs \`claude-code/\`, and Codex installs \`codex/\`.
+Cursor uses \`pstack/\` directly. Claude Code installs \`claude-code/\`, and Codex installs \`codex/\`. A relative link to a pstack file that the trees leave out points at that file on GitHub \`main\` instead.
 
 After editing those sources, run \`${COMMAND}\` from the repository root and commit the result.
 `;
@@ -100,14 +102,20 @@ for (const { dir, label } of HARNESSES) {
 for (const problem of problems) console.log(`FAIL ${problem}`);
 if (problems.length > 0) process.exit(1);
 
+// The pstack-relative path that a relative link in `from` points at, if that path exists.
+function resolve(from, href) {
+  const target = href.replace(/[#?].*/, "");
+  if (!target || /^[a-z][a-z0-9+.-]*:/i.test(target)) return undefined;
+  const path = posix.join(posix.dirname(from), target).replace(/\/$/, "");
+  return existsSync(join(PSTACK, path)) ? path : undefined;
+}
+
+function has(files, path) {
+  return files.has(path) || [...files.keys()].some((key) => key.startsWith(`${path}/`));
+}
+
 function render({ dir, label, manifests, sidecars }) {
-  const copies = [
-    ...walk(SKILLS),
-    ...walk(join(PSTACK, "agents")),
-    ...walk(join(PSTACK, "docs")),
-    ...walk(join(PSTACK, "automations")),
-    join(PSTACK, "README.md"),
-  ];
+  const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents")), ...walk(join(PSTACK, "docs")), join(PSTACK, "README.md")];
   const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
   const line =
     `In ${label}, read [the ${label} adapter](../../docs/harness/${dir}.md) once per session before you follow this skill. ` +
@@ -120,26 +128,31 @@ function render({ dir, label, manifests, sidecars }) {
   }
   files.set("LICENSE", file(join(PSTACK, "LICENSE")));
   for (const manifest of manifests) files.set(manifest, file(join(PSTACK, "plugin.json")));
+  for (const [path, entry] of files) {
+    if (!path.endsWith(".md")) continue;
+    const text = entry.bytes.toString("utf8").replace(LINK, (link, href) => {
+      const target = resolve(path, href);
+      if (!target || target.split("/")[0] === ".." || has(files, target)) return link;
+      const kind = statSync(join(PSTACK, target)).isDirectory() ? "tree" : "blob";
+      return `](${GITHUB}/${kind}/main/pstack/${target}${href.slice(href.search(/[#?]|$/))})`;
+    });
+    entry.bytes = Buffer.from(text);
+  }
   return files;
 }
 
+// Harnesses install only the tree, so a relative link that works from pstack/ has to work inside each tree too.
+// Links to pstack files that a tree leaves out already point at GitHub, so a failure here is a link that leaves pstack/.
 const rendered = new Map([["README.md", { bytes: Buffer.from(README), executable: false }]]);
-for (const harness of HARNESSES) {
-  for (const [path, entry] of render(harness)) rendered.set(`${harness.dir}/${path}`, entry);
-}
-
-// A relative link that works from pstack/ has to work inside each tree too, because harnesses install only the tree.
 const dangling = [];
-const keys = [...rendered.keys()];
-for (const [path, { bytes }] of rendered) {
-  const [tree, ...rest] = path.split("/");
-  if (rest.length === 0 || !path.endsWith(".md")) continue;
-  for (const [, href] of bytes.toString("utf8").matchAll(/\]\(([^)\s]+)\)/g)) {
-    const target = href.replace(/[#?].*/, "");
-    if (!target || /^[a-z][a-z0-9+.-]*:/i.test(target) || !existsSync(join(PSTACK, dirname(rest.join("/")), target))) continue;
-    const inTree = posix.join(posix.dirname(path), target).replace(/\/$/, "");
-    if (!inTree.startsWith(`${tree}/`) || !keys.some((key) => key === inTree || key.startsWith(`${inTree}/`))) {
-      dangling.push(`${path} links to ${href}, which is not in the tree`);
+for (const harness of HARNESSES) {
+  const files = render(harness);
+  for (const [path, entry] of files) {
+    rendered.set(`${harness.dir}/${path}`, entry);
+    if (!path.endsWith(".md")) continue;
+    for (const [, href] of entry.bytes.toString("utf8").matchAll(LINK)) {
+      const target = resolve(path, href);
+      if (target && !has(files, target)) dangling.push(`harness/pstack/${harness.dir}/${path} links to ${href}, which is not in the tree`);
     }
   }
 }
