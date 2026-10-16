@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { dirname, join, posix, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -127,6 +127,24 @@ const rendered = new Map([["README.md", { bytes: Buffer.from(README), executable
 for (const harness of HARNESSES) {
   for (const [path, entry] of render(harness)) rendered.set(`${harness.dir}/${path}`, entry);
 }
+
+// A relative link that works from pstack/ has to work inside each tree too, because harnesses install only the tree.
+const dangling = [];
+const keys = [...rendered.keys()];
+for (const [path, { bytes }] of rendered) {
+  const [tree, ...rest] = path.split("/");
+  if (rest.length === 0 || !path.endsWith(".md")) continue;
+  for (const [, href] of bytes.toString("utf8").matchAll(/\]\(([^)\s]+)\)/g)) {
+    const target = href.replace(/[#?].*/, "");
+    if (!target || /^[a-z][a-z0-9+.-]*:/i.test(target) || !existsSync(join(PSTACK, dirname(rest.join("/")), target))) continue;
+    const inTree = posix.join(posix.dirname(path), target).replace(/\/$/, "");
+    if (!inTree.startsWith(`${tree}/`) || !keys.some((key) => key === inTree || key.startsWith(`${inTree}/`))) {
+      dangling.push(`${path} links to ${href}, which is not in the tree`);
+    }
+  }
+}
+for (const link of dangling) console.log(`FAIL ${link}`);
+if (dangling.length > 0) process.exit(1);
 
 if (process.argv.includes("--check")) {
   const onDisk = new Map(existsSync(OUT) ? walk(OUT).map((path) => [relative(OUT, path), file(path)]) : []);
