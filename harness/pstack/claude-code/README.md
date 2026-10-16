@@ -36,7 +36,7 @@ codex plugin add pstack@cursor-plugins
 
 codex invokes plugin skills as `$pstack:<name>`, and the [codex adapter](./docs/harness/codex.md) maps every other cursor name.
 
-both install a generated copy of pstack from [`harness/pstack/`](https://github.com/cursor/plugins/tree/main/harness/pstack) at the repository root. after changing `skills/`, `agents/`, `docs/`, or this readme, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result. ci fails until you do.
+both install a generated copy of pstack from [`harness/pstack/`](https://github.com/cursor/plugins/tree/main/harness/pstack) at the repository root. after changing `skills/`, `agents/`, `docs/`, `automations/`, or this readme, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result. ci fails until you do.
 
 ## get started
 

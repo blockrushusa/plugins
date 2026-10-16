@@ -14,7 +14,7 @@ const COMMAND = "node scripts/generate-pstack-harness-trees.mjs";
 const SIDECAR = "policy:\n  allow_implicit_invocation: false\n";
 const README = `# pstack harness trees
 
-This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/docs\`, \`pstack/README.md\`, and \`pstack/plugin.json\`. Do not edit it by hand.
+This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/docs\`, \`pstack/automations\`, \`pstack/README.md\`, and \`pstack/plugin.json\`. Do not edit it by hand.
 
 Cursor uses \`pstack/\` directly. Claude Code installs \`claude-code/\`, and Codex installs \`codex/\`.
 
@@ -101,7 +101,13 @@ for (const problem of problems) console.log(`FAIL ${problem}`);
 if (problems.length > 0) process.exit(1);
 
 function render({ dir, label, manifests, sidecars }) {
-  const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents")), ...walk(join(PSTACK, "docs")), join(PSTACK, "README.md")];
+  const copies = [
+    ...walk(SKILLS),
+    ...walk(join(PSTACK, "agents")),
+    ...walk(join(PSTACK, "docs")),
+    ...walk(join(PSTACK, "automations")),
+    join(PSTACK, "README.md"),
+  ];
   const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
   const line =
     `In ${label}, read [the ${label} adapter](../../docs/harness/${dir}.md) once per session before you follow this skill. ` +
