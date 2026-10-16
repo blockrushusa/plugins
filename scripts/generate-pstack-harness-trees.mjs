@@ -16,9 +16,9 @@ const LINK = /\]\(([^)\s]+)\)/g;
 const SIDECAR = "policy:\n  allow_implicit_invocation: false\n";
 const README = `# pstack harness trees
 
-This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/docs\`, \`pstack/README.md\`, and \`pstack/plugin.json\`. Do not edit it by hand.
+This folder is generated from \`pstack/skills\`, \`pstack/agents\`, the adapters in \`pstack/docs/harness\`, \`pstack/LICENSE\`, and \`pstack/plugin.json\`. Do not edit it by hand.
 
-Cursor uses \`pstack/\` directly. Claude Code installs \`claude-code/\`, and Codex installs \`codex/\`. A relative link to a pstack file that the trees leave out points at that file on GitHub \`main\` instead.
+Cursor uses \`pstack/\` directly. Claude Code installs \`claude-code/\`, and Codex installs \`codex/\`. Each tree holds only its own adapter, not the rest of \`pstack/docs\` or \`pstack/README.md\`. A relative link to a pstack file that the trees leave out points at that file on GitHub \`main\` instead.
 
 After editing those sources, run \`${COMMAND}\` from the repository root and commit the result.
 `;
@@ -115,7 +115,8 @@ function has(files, path) {
 }
 
 function render({ dir, label, manifests, sidecars }) {
-  const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents")), ...walk(join(PSTACK, "docs")), join(PSTACK, "README.md")];
+  // Skills read their harness adapter at runtime. The guide, the README, and the other adapter stay on GitHub.
+  const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents")), join(PSTACK, "docs/harness", `${dir}.md`)];
   const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
   const line =
     `In ${label}, read [the ${label} adapter](../../docs/harness/${dir}.md) once per session before you follow this skill. ` +
