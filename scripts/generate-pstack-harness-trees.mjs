@@ -4,9 +4,11 @@ import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, st
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const PSTACK = join(dirname(fileURLToPath(import.meta.url)), "..", "pstack");
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const PSTACK = join(ROOT, "pstack");
 const SKILLS = join(PSTACK, "skills");
-const OUT = join(PSTACK, "harness");
+// Outside pstack/ so Cursor, which copies the whole plugin folder, does not install these trees too.
+const OUT = join(ROOT, "harness", "pstack");
 const COMMAND = "node scripts/generate-pstack-harness-trees.mjs";
 // Codex ignores disable-model-invocation, so each hidden skill needs a sidecar.
 const SIDECAR = "policy:\n  allow_implicit_invocation: false\n";
@@ -126,12 +128,12 @@ if (process.argv.includes("--check")) {
     const [want, have] = [rendered.get(path), onDisk.get(path)];
     return !want || !have || !want.bytes.equals(have.bytes) || want.executable !== have.executable;
   });
-  for (const path of drifted.slice(0, 20)) console.log(`pstack/harness/${path}`);
+  for (const path of drifted.slice(0, 20)) console.log(`harness/pstack/${path}`);
   if (drifted.length > 0) {
-    console.log(`pstack/harness is out of date. Run \`${COMMAND}\` and commit the result.`);
+    console.log(`harness/pstack is out of date. Run \`${COMMAND}\` and commit the result.`);
     process.exit(1);
   }
-  console.log("pstack/harness is up to date.");
+  console.log("harness/pstack is up to date.");
 } else {
   rmSync(OUT, { recursive: true, force: true });
   for (const [path, { bytes, executable }] of rendered) {

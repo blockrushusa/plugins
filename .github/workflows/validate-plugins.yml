@@ -9,6 +9,7 @@ on:
       - "**/plugin.json"
       - "schemas/**"
       - "pstack/**"
+      - "harness/**"
       - "scripts/**"
       - ".github/workflows/validate-plugins.yml"
 
