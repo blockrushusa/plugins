@@ -8,8 +8,7 @@ on:
       - ".agents/plugins/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
-      - "pstack/skills/**"
-      - "pstack/docs/harness/**"
+      - "pstack/**"
       - "scripts/**"
       - ".github/workflows/validate-plugins.yml"
 
@@ -28,3 +27,6 @@ jobs:
 
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs
+
+      - name: Check generated pstack harness trees
+        run: node scripts/generate-pstack-harness-trees.mjs --check

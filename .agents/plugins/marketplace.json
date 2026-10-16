@@ -20,7 +20,7 @@
       "name": "pstack",
       "source": {
         "source": "local",
-        "path": "./pstack"
+        "path": "./pstack/harness/codex"
       },
       "policy": {
         "installation": "AVAILABLE",
