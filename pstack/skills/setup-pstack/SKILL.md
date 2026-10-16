@@ -5,8 +5,6 @@ description: Configure which models pstack uses per role and at what reasoning b
 
 # Setup pstack
 
-Outside Cursor, first read the adapter for your harness, [Claude Code](../../docs/harness/claude-code.md) or [Codex](../../docs/harness/codex.md).
-
 Write `~/.cursor/rules/pstack-models.mdc`, an always-applied rule that sets pstack's model per role.
 
 ## Steps

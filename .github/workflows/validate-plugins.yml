@@ -28,6 +28,3 @@ jobs:
 
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs
-
-      - name: Check pstack harness adapters
-        run: node scripts/check-pstack-harness.mjs

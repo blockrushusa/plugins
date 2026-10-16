@@ -6,8 +6,6 @@ disable-model-invocation: true
 
 # Arena
 
-Outside Cursor, first read the adapter for your harness, [Claude Code](../../docs/harness/claude-code.md) or [Codex](../../docs/harness/codex.md).
-
 Open a todolist with one entry per phase (Frame, Fan out, Cross-judge, Pick, Graft, Verify) before launching anything.
 
 ## Phase A: Frame

@@ -6,8 +6,6 @@ disable-model-invocation: true
 
 # Swarm
 
-Outside Cursor, first read the adapter for your harness, [Claude Code](../../docs/harness/claude-code.md) or [Codex](../../docs/harness/codex.md).
-
 ## Start
 
 Open a todolist with one entry per phase before launching anything.
