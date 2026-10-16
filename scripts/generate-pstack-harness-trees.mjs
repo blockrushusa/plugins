@@ -12,7 +12,7 @@ const COMMAND = "node scripts/generate-pstack-harness-trees.mjs";
 const SIDECAR = "policy:\n  allow_implicit_invocation: false\n";
 const README = `# pstack harness trees
 
-This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/docs/harness\`, and \`pstack/plugin.json\`. Do not edit it by hand.
+This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/docs\`, \`pstack/README.md\`, and \`pstack/plugin.json\`. Do not edit it by hand.
 
 Cursor uses \`pstack/\` directly. Claude Code installs \`claude-code/\`, and Codex installs \`codex/\`.
 
@@ -99,7 +99,8 @@ for (const problem of problems) console.log(`FAIL ${problem}`);
 if (problems.length > 0) process.exit(1);
 
 function render({ dir, label, manifests, sidecars }) {
-  const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents"))];
+  const docs = walk(join(PSTACK, "docs")).filter((path) => path.endsWith(".md"));
+  const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents")), ...docs, join(PSTACK, "README.md")];
   const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
   const line =
     `In ${label}, read [the ${label} adapter](../../docs/harness/${dir}.md) once per session before you follow this skill. ` +
@@ -110,7 +111,6 @@ function render({ dir, label, manifests, sidecars }) {
     if (wrap) files.get(path).bytes = Buffer.from(text.replace(/^(# .*)\n+/m, `$1\n\n${line}\n\n`));
     if (sidecars && hidden) files.set(`skills/${skill}/agents/openai.yaml`, { bytes: Buffer.from(SIDECAR), executable: false });
   }
-  files.set(`docs/harness/${dir}.md`, file(join(PSTACK, "docs/harness", `${dir}.md`)));
   files.set("LICENSE", file(join(PSTACK, "LICENSE")));
   for (const manifest of manifests) files.set(manifest, file(join(PSTACK, "plugin.json")));
   return files;
