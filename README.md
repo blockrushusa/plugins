@@ -117,7 +117,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `feishu` | [Feishu](third_party/feishu/) | Cursor | Integrations | Search, create, and update Feishu docs, and read Feishu messages and groups. |
 | `framer` | [Framer](third_party/framer/) | Cursor | Integrations | Design, build, and edit your Framer sites, pages, and CMS content. |
 | `vanta` | [Vanta](third_party/vanta/) | Cursor | Integrations | Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta. |
-| `directmailamerica` | [DirectMailAmerica](third_party/directmailamerica/) | Rainmaker LLC d/b/a DirectMailAmerica.com | Integrations | Print and mail USPS letters and postcards, run Email to Letter rules, and track orders. |
+| `directmailamerica` | [DirectMailAmerica](third_party/directmailamerica/) | Rainmaker LLC d/b/a DirectMailAmerica.com | Integrations | Print and mail USPS letters, Certified Mail and postcards, run Email to Letter and Email to Postcard, and track orders. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

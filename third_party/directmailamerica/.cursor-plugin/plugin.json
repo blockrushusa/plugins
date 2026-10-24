@@ -1,11 +1,11 @@
 {
   "name": "directmailamerica",
   "displayName": "DirectMailAmerica",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Print and mail USPS letters and postcards, run Email to Letter rules, and track orders.",
+  "description": "Print and mail USPS letters, Certified Mail and postcards, run Email to Letter and Email to Postcard, and track orders.",
   "author": {
     "name": "Rainmaker LLC d/b/a DirectMailAmerica.com",
     "email": "support@directmailamerica.com"
@@ -22,7 +22,8 @@
     "usps",
     "certified mail",
     "email to letter",
-    "mcp"
+    "mcp",
+    "email to postcard"
   ],
   "category": "integrations",
   "tags": [
@@ -31,19 +32,6 @@
     "usps",
     "mcp"
   ],
-  "variables": {
-    "type": "object",
-    "properties": {
-      "DIRECTMAILAMERICA_API_KEY": {
-        "type": "string",
-        "title": "DirectMailAmerica API key",
-        "description": "Workspace key from https://directmailamerica.com (Developers settings). lbl_live_ keys mail for real; lbl_test_ keys never buy postage."
-      }
-    },
-    "required": [
-      "DIRECTMAILAMERICA_API_KEY"
-    ]
-  },
   "mcpServers": "./mcp.json",
   "skills": "./skills/"
 }
