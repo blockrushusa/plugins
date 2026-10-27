@@ -12,7 +12,9 @@ Mailing is real, costs money and cannot be undone. Never call `send_letter`, `se
 - `get_email_to_letter`: inbox address, rules, budgets, usage, balance, letterheads and defaults.
 - `list_email_letters` (page with `before`): recent emails and their letter state.
 - `get_email_letter` / `download_email_letter` (format pdf or eml): full text, price and the PDF preview.
-- `check_email_box`: checks the inbox now (about 60 s cooldown; new mail can take several minutes to appear).
+
+## Process the inbox (may send paid mail)
+- `check_email_box` processes both Email to Letter and Email to Postcard rules and can trigger previously authorized autosend. It is not a read-only refresh. Use the list/get tools above for inspection; call `check_email_box` only when the user asks to process the inbox and understands that enabled auto rules may spend money and send mail. Respect the approximately 60 s cooldown; new mail can take several minutes to appear.
 
 ## Rules
 - `save_email_letter_rule` creates or replaces a rule (sender, recipient, optional subject match, address, formatting). Default to approval mode. Switching a rule to automatic sending needs the user's explicit consent to autosend and to the Terms of Use, passed in `consent`; never assume it.
